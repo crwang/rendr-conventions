@@ -9,51 +9,52 @@ Rendr has been loosely modeled after Rails, in terms of having standard conventi
 
 ## Project Structure
 
-├─┬ app
-│ ├── collections
-│ ├── controllers
-│ ├── lib
-│ ├── models
-│ ├── templates
-│ ├── views
-│ │
-│ ├── app.js
-│ ├── router.js
-│ └── routes.js
-│ 
-├─┬ assets
-│ ├── stylesheets
-│ └── vendor
-├── config
-├── node_modules
-├─┬ public
-│ └── images
-├─┬ server
-│ └─┬ middleware
-│   └── index.js
-├─┬ test
-│ └─┬ app
-│   ├── collections
-│   ├── models
-│   └── views
-│
-├── Gruntfile.js
-├── package.json
-├── Readme.md
+    ├─┬ app
+    │ ├── collections
+    │ ├── controllers
+    │ ├── lib
+    │ ├── models
+    │ ├── templates
+    │ ├── views
+    │ │
+    │ ├── app.js
+    │ ├── router.js
+    │ └── routes.js
+    │ 
+    ├─┬ assets
+    │ ├── stylesheets
+    │ └── vendor
+    ├── config
+    ├── node_modules
+    ├─┬ public
+    │ └── images
+    ├─┬ server
+    │ └─┬ middleware
+    │   └── index.js
+    ├─┬ test
+    │ └─┬ app
+    │   ├── collections
+    │   ├── models
+    │   └── views
+    │
+    ├── Gruntfile.js
+    ├── package.json
+    ├── Readme.md
 
 ### app
 
 #### Structure Overview
-├── collections
-├── controllers
-├── lib
-├── models
-├── templates
-├── views
-│
-├── app.js
-├── router.js
-└── routes.js
+
+    ├── collections
+    ├── controllers
+    ├── lib
+    ├── models
+    ├── templates
+    ├── views
+    │
+    ├── app.js
+    ├── router.js
+    └── routes.js
 
 ##### collections
 
