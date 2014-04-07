@@ -5,9 +5,9 @@ Conventions we are using for working with apps developed on the Rendr Framework
 
 # Introduction
 
-Rendr has been loosely modeled after Rails, in terms of having standard conventions.  Even the way the directory structures are laid out, Rendr resembles Rails convention.
+Rendr has been loosely modeled after Rails, in terms of having standard conventions.  The directory structures combines thet Rails convention with Backbone JS.
 
-## Project Structure
+# Project Structure
 
     ├─┬ app
     │ ├── collections
@@ -41,9 +41,9 @@ Rendr has been loosely modeled after Rails, in terms of having standard conventi
     ├── package.json
     ├── Readme.md
 
-### app
+## app
 
-#### Structure Overview
+### Structure Overview
 
     ├── collections
     ├── controllers
@@ -56,9 +56,9 @@ Rendr has been loosely modeled after Rails, in terms of having standard conventi
     ├── router.js
     └── routes.js
 
-##### collections
+#### collections
 
-###### Description
+##### Description
 
 The collections folder is used to house the Rendr collections, based on backbone js.
 
@@ -67,7 +67,7 @@ http://backbonejs.org/#Collection
 
 Rendr collections typically require a model and extend the base collection (app/collections/base.js).  
 
-###### Convention
+##### Convention
 
 Rendr collections should be named similar to the Rails convention of how they treat models and resources.  
 
@@ -75,31 +75,31 @@ The collection filename should be snake-cased (underscored) and pluralized.
 
 The class name for the collection however should be cap-cased.
 
-###### Example - app/collections/companies.js
+##### Example - app/collections/companies.js
 
     var Company = require('../models/company')
       , Base = require('./base');
 
     module.exports = Base.extend({
       model: Company,
-      url: '/api/v1/companies'
+      url: '/companies'
     });
     module.exports.id = 'Companies';
 
 
-##### controllers
+#### controllers
 
-###### Description
+##### Description
 
 Controllers are for responding to routes.
 
 Controllers do not exist in Backbone js, but the convention follows the rails naming convention for routes.  
 
-###### Convention
+##### Convention
 
 Rendr controller filenames should be snake-cased and pluralized and followed by an _controller.js
 
-#######  Actions
+#####  Actions
 
 Actions in Rendr are most advantageous as HTTP GET calls.
 
@@ -109,29 +109,29 @@ http://guides.rubyonrails.org/action_controller_overview.html
 
 Conventional Actions:
 
-- index
+*index*
 
 Similar to Rails convention, the index action on a resource-based controller, should display a collection of models.
 
 Url: http://example.com/employees
 
-- show
+*show*
 
 Similar to Rails convention, the show action on a resource-based controller, should display a single model.
 
 Url: http://example.com/employees/1
 
-- new
+*new*
 
 Similar to Rails convention, the new action on a resource-based controller, should display a form for filling to create a new record/instance of a resource.
 
 Url: http://example.com/employees/new
 
-- edit 
+*edit*
 
 Similar to Rails convention, the edit action on a resource-based controller, should display a form for filling to edit an existing record/instance of a resource.
 
-Url: http://example.com/employees/edit
+Url: http://example.com/employees/1/edit
 
 Note: These need to be defined in the app/routes.js file.
 
@@ -142,18 +142,24 @@ An example app/routes.js file would be:
       match('companies',                    'companies#index');
       match('companies/:id',                'companies#show');
       match('companies/new',                'companies#new');
-      match('companies/edit/:id',           'companies#edit');
+      match('companies/:id/edit',           'companies#edit');
     };
 
 
-###### Example - app/controllers/companies_controller.js
+##### Example - app/controllers/companies_controller.js
 
 Below is an example of 
 
     module.exports = {
         // Show the list of companies
         index: function(params, callback) {
-            callback();
+            var spec = {
+                  collection: {collection: 'Companies', params: params}
+                };
+            };
+            this.app.fetch(spec, function(err, result) {
+              callback(err, result);
+            });
         },
 
         // Show the current company.
@@ -178,11 +184,11 @@ Below is an example of
     };
 
 
-##### lib
+#### lib
 
-##### models
+#### models
 
-###### Description
+##### Description
 
 The models folder is used to house the Rendr models, based on backbone js.
 
@@ -191,7 +197,7 @@ http://backbonejs.org/#Model
 
 Rendr models extend the base model (app/models/base.js).  
 
-###### Convention
+##### Convention
 
 Rendr models should be named similar to the Rails convention of how they treat models and resources.  
 
@@ -199,12 +205,12 @@ The model filename should be snake-cased (underscored) and singular.
 
 The class name for the model however should be cap-cased.
 
-###### Example - app/models/company.js
+##### Example - app/models/company.js
 
     var Base = require('./base');
 
     module.exports = Base.extend({
-      url: '/api/v1/companies/:id' // The url used for syncing the model.
+      url: '/companies/:id' // The url used for syncing the model.
     });
 
     module.exports.id = 'Company';
@@ -214,14 +220,14 @@ Note that Rendr expects the primary key of the model to be id as is the standard
 Example of id field not being named id:
 
     module.exports = Base.extend({
-      url: '/api/v1/companies/:id',
+      url: '/companies/:id',
       idAttribute: 'companyId' // custom id.
     });
 
 
-##### templates
+#### templates
 
-###### Description
+##### Description
 
 The templates folder is used to house the Rendr templates/markup, the default being handlebars js (http://handlebarsjs.com).
 
@@ -229,7 +235,7 @@ Rendr templates are modeled after backbone templates.
 
 Here, I will only include information on handlebars since that is what we are using.
 
-###### Convention
+##### Convention
 
 Rendr templates should be in a folder under templates, with the folder name being the pluralized version of the resource.  
 
@@ -263,7 +269,7 @@ Non-Controller based templates are meant for partials.
 Rendr does not make a distinction in the templates and views, but I have found that the distinction between a controller-based view and a re-usable partial view is strong enough to warrant a separation.  Templates especially will be different if they are to represent a list of a resource or a the main page of a resource.  Things like headers and other auxilliary information may be found on a page that are not found in a partial.
 
 
-###### Example - app/templates/companies/index.hbs
+##### Example - app/templates/companies/index.hbs
 
 A template for a page with a list of companies.
 
@@ -274,7 +280,7 @@ A template for a page with a list of companies.
         {{/each}}
     </div>
 
-###### Example - app/templates/companies/list.hbs
+##### Example - app/templates/companies/list.hbs
 
 A template for a list of companies.
 
@@ -285,7 +291,7 @@ A template for a list of companies.
     </div>
 
 
-###### Example - app/templates/companies/show.hbs
+##### Example - app/templates/companies/show.hbs
 
 A template for a page of a particular company.
 
@@ -308,7 +314,7 @@ We may want to show employees and other information as well.
     </section>
 
 
-###### Example - app/templates/companies/item.hbs
+##### Example - app/templates/companies/item.hbs
 
 A template for a company item.
 
@@ -330,15 +336,15 @@ A template for a company item.
         </div>
     </div>
 
-##### views
+#### views
 
-###### Description
+##### Description
 
 The views folder is used to house the Rendr views, based on backbone views.
 
 On Github, there is some documentation for Rendr's Views: https://github.com/rendrjs/rendr#baseview 
 
-###### Convention
+##### Convention
 
 Rendr views should be in a folder under views, with the folder name being the pluralized version of the resource.  
 
@@ -371,7 +377,7 @@ Non-Controller based views are meant for partials.
 
 Rendr does not make a distinction in the templates and views, but I have found that the distinction between a controller-based view and a re-usable partial view is strong enough to warrant a separation.  Views especially will be different if they are to represent a list of a resource or a the main page of a resource.  Things like headers and other auxilliary information may be found on a page that are not found in a partial.  Additionally, page-based views (controller views) are more likely to have other partial views included, where as partial views (non-controller) are more likely to thin. 
 
-###### Example - app/views/companies/index.js
+##### Example - app/views/employees/index.js
 
     var BaseView = require('../base');
 
@@ -380,7 +386,7 @@ Rendr does not make a distinction in the templates and views, but I have found t
     });
     module.exports.id = 'employees/index';
 
-###### Example - app/views/companies/item.js
+##### Example - app/views/employees/item.js
 
     var BaseView = require('../base');
 
@@ -402,14 +408,24 @@ Rendr does not make a distinction in the templates and views, but I have found t
     });
     module.exports.id = 'employees/item';
 
-### assets
+## assets
 
-### config
+## config
 
-### node_modules
+## node_modules
 
-### public
+## public
 
-### server
+## server
 
-### test
+## test
+
+
+# Running the app
+
+From the command-line of your application, type:
+
+    grunt server
+
+    
+
