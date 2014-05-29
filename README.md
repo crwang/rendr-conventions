@@ -427,5 +427,89 @@ From the command-line of your application, type:
 
     grunt server
 
+
+# Coding Tips
+
+These are current coding tips.  Because Rendr is in flux, I'm going to datestamp these to try to prevent errors as it changes.
+
+## Adding Views Dynamically (data exists)
+
+This is an example of adding an employee view to an employee list view.
+
+Note that we already have the employee model and are just creating the view dynamically on the client-side.
+
+This code would be located in **views/employees/list.js**
     
+        var itemViews = this.getItemViews();
+        // Then, we add a new view.
+    
+        // Get the View
+        var EmployeeItemView = BaseView.getView('employees/item'); 
+    
+        // Instantiate the new view.
+        var view = new EmployeeItemView({
+            app: this.app,
+            model: employee
+        });
+    
+        // Add the model to our collection.
+        this.collection.add(employee);
+    
+        // Add the view to our child views.  Don't use the itemViews because it's a different reference.
+        this.childViews.push(view);
+    
+        // Add the view to the list.
+        this.$('div.media-list').append(view.render().el);
+    
+
+## Adding Views Dynamically (data needs to be pulled from API)
+
+I've implemented a way to do this, but had to modify Rendr's core code to make it work.  Therefore, I'm not documenting this yet, until I do a proper fork or until I get feedback from their team that they way I'm doing it is an appropriate approach.
+
+## Accessing Subviews (2014-05-29)
+
+In the way we have been coding, we have also needed to access subviews from within our views, especially client-side.  Following are some examples of how we are accomplishing this:
+
+### Accessing List Views
+
+This is a basic function declaration in the parent view.
+
+    getItemViews: function() {
+        var views = this.getChildViewsByName('view_name_here');
+        return views;
+    },
+
+This is basic function declaration in a view with a subview of 'employees/list'.  In this example, if we want to access the subview from the parent view, we can do it this way.  
+
+**Note: if there are more than one subview with the same view name, we cannot use this approach.**
+
+This code could be located in **views/company/index.js**
+
+    getEmployeesListView: function() {
+        var views = this.getChildViewsByName('employees/list');
+        return views;
+    },
+
+
+### Accessing Other Kinds of Views
+
+Here is an example of getting a single sub-view that is not a list.  Notice the array access:
+
+This code could be located in **views/employees/item.js**
+
+    getTeamsActionBarView: function() {
+        var views = this.getChildViewsByName('employees/action_bar');
+        if (views && views.length) {
+            return views[0];
+        }
+        return null;
+    },
+
+# Writing Middleware
+
+# Cookies
+
+# Session Data
+
+
 
