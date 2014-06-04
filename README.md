@@ -466,6 +466,71 @@ This code would be located in **views/employees/list.js**
 
 I've implemented a way to do this, but had to modify Rendr's core code to make it work.  Therefore, I'm not documenting this yet, until I do a proper fork or until I get feedback from their team that they way I'm doing it is an appropriate approach.
 
+Note to self:
+
+If the Backbone events don't fire when using this method, we probably didn't specify the tagName or don't have the template being rendered in the tag we want.  Inspect the elements to make sure the template was rendered under the element we thought it was.
+
+The method that I am using with the attach has duplicate views being created because of a bug in Rendr.
+
+There's a comment here from Spike Brehm
+
+> I'm pretty sure it's because there's a view created by the {{view}} helper, then another one created by attach -- definitely we need to fix, and I'll address after the entryPath, RequireJS, and Browserify PRs.
+
+https://github.com/rendrjs/rendr/issues/75
+
+Second, because Rendr is not supposed to but currently requires a model.id, if we don't specify the model from the API, this method breaks.
+
+Basically, in the Rendr code
+/shared/base/view.js
+
+There is this code under parseOptions which needs an id.
+
+    parseOptions: function(options) {
+        ...
+        options.model_name = options.model_name || this.app.modelUtils.modelName(options.model.constructor);
+        options.model_id = options.model.id; // This needs an id in the model
+
+
+## Adding a Model to a Collection Dynamically and then re-rendering the List view. (2014-06-04)
+
+Because we are using web sockets for part of our app, we will received json data that we will need to convert into a model and then have reflected on the UI.
+
+The flow of the code is this:
+
+1. Receive JSON
+2. Convert it to a model
+3. Add the model to the collection
+4. Re-render the view.
+
+Here's the way I've gotten it to work:
+
+    // Some view
+    ...
+    postRender: function() {
+        var _this = this;
+        // 1. Receive the new member data
+        channel.bind('new_member', function(json) {
+            // 2. Convert it into a model.
+            // Note that we passi n the app
+            var newTeamMember = new TeamMember(json, {
+                app: _this.app // Make sure to add the app.
+            });
+        newTeamMember.store(); // And store this model in the store since we are persisting it.
+        // 3. Add the model ot the collection
+        _this.collectionMembers.add(newTeamMember);
+    }
+
+    inSomeOtherCodeThatIsFiredByAButtonClick: function() {    
+        var TeamMemberListView = BaseView.getView('team_members/list');
+        var currMemberListView = new TeamMemberListView({
+            app: _this.app,
+            collection: this.collectionMembers
+        });                    
+        // 4. Then render with the latest data.
+        $(this.el).find('#some-element').html(currMemberListView.render().el);
+    }
+
+
 ## Accessing Subviews (2014-05-29)
 
 In the way we have been coding, we have also needed to access subviews from within our views, especially client-side.  Following are some examples of how we are accomplishing this:
