@@ -432,6 +432,86 @@ From the command-line of your application, type:
 
 These are current coding tips.  Because Rendr is in flux, I'm going to datestamp these to try to prevent errors as it changes.
 
+## Retrieving Data Dynamically (2014-06-16)
+
+    fetchEmployees: function(callback) {
+        var sessionData = this.app.get('session');
+        var spec = [{
+            collection: 'Employees',
+            params: {
+                organization_id: 1,
+                access_token: sessionData.access_token
+            }
+        }];
+        this.app.fetch(spec, function(err, result) {
+            if (result) {
+                var collection = null;
+                try {
+                    collection = result[0];
+                } catch (error) {
+                }
+                callback(err, collection);
+            }
+        });
+    },
+
+## Adding Views with Data Dynamically (2014-06-16)
+
+    fetchEmployees: function(callback) {
+        var sessionData = this.app.get('session');
+        var spec = [{
+            collection: 'Employees',
+            params: {
+                organization_id: 1,
+                access_token: sessionData.access_token
+            }
+        }];
+        this.app.fetch(spec, function(err, result) {
+            if (result) {
+                var collection = null;
+                try {
+                    collection = result[0];
+                } catch (error) {
+                }
+                callback(err, collection);
+            }
+        });
+
+        // This is another way but asking it not to read from cache which is the default
+        /*
+        this.app.fetch(spec, { readFromCache: false }, function(err, result) {
+            if (result) {
+                var collection = null;
+                try {
+                    collection = result[0];
+                } catch (error) {
+                }
+                callback(err, collection);
+            }
+        });
+        */
+    },
+
+    someFunctionToDoTagInputForEmployees: function() {        
+        var TagInputView = BaseView.getView('taginput/form');
+        this.fetchEmployees(function(err, data) {
+                      
+            // Taginput
+            _this.tagInputView = new TagInputView({
+                app: _this.app,
+                minKeywordLength: 0,
+                collection: data,
+                onSelect: function(model) {
+                    console.log(model);
+                }
+            });    
+            $('#someElem').html(_this.tagInputView.render().el);
+        });    
+    }
+
+
+
+
 ## Adding Views Dynamically (data exists)
 
 This is an example of adding an employee view to an employee list view.
