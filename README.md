@@ -756,6 +756,7 @@ Add this code
 Then in your views, models, and controllers you can acces the config as
 
 Eg, some views/employees/index.js
+
     var config = this.app.get('config');
     var pusherAppKey = config.pusher.app_key;
 
