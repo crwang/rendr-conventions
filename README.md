@@ -650,6 +650,138 @@ This code could be located in **views/employees/item.js**
         return null;
     },
 
+# Config
+
+## Introduction
+The config example https://github.com/rendrjs/rendr-examples/blob/master/01_config shows a way to set up config using yaml files.
+
+It is look for a NODE_ENV setting to determine which config file to use, because it uses the config module: https://www.npmjs.org/package/config.
+
+For more information on setting this on heroku, the link for node is here: https://devcenter.heroku.com/articles/nodejs-support
+
+To find the config setting on the command line:
+    
+    echo $NODE_ENV
+
+To set the env config setting on the Mac from the command line:
+
+    export NODE_ENV=production
+
+The config then can be access through dot notation, but is only apparently available in the express portion of the app.  The typical use case would be to access the config in /index.js.
+
+Please note that indentation is important in yml files.
+
+## Setting up the config
+
+There should be at least 3 files in /config: default.yml, development.yml, production.yml
+
+Here are some examples:
+
+default.yml
+
+    server:
+      port: 3030
+    api:
+      default:
+        host: localhost:3000
+        protocol: http
+    oauth:
+      client_id: xxxxxxxxx
+      client_secret: xxxxxxxxx
+    session:
+      secret: A secret
+    pusher:
+      app_key: aaaaa
+
+development.yml
+
+    server:
+      port: 80
+    api:
+      default:
+        host: dev-app.herokuapp.com
+        protocol: http
+    oauth:
+      client_id: xxxxxxxxx
+      client_secret: xxxxxxxxx
+    session:
+      secret: A secret for dev
+    pusher:
+      app_key: bbbbb
+
+production.yml
+
+    server:
+      port: 80
+    api:
+      default:
+        host: productionApp.com
+        protocol: https
+    oauth:
+      client_id: xxxxxxxxx
+      client_secret: xxxxxxxxx
+    session:
+      secret: A secret for production
+    pusher:
+      app_key: ccccc
+
+**When changing the config, you will need to rerun grunt server for the changes to take effect**
+
+If you want to avoid this, you need to modify the /gruntfile.js and add this code under your watch to force a rebuild.
+
+    grunt.initConfig({
+        ...
+        watch: {
+            ...
+            config: {
+                files: 'config/**/*.yml',
+                tasks: ['browserify'],
+                options: {
+                    interrupt: true
+                }
+            },
+            ...
+        ...
+    });
+
+## Using Config in /index.js
+
+    var express = require('express'),
+        config = require('config'),
+        ...
+        var dataAdapterConfig = {
+            'default': {
+                host: config.api.default.host,
+                protocol: config.api.default.protocol
+            }
+        };
+        ...
+
+## Using Config in Views, Models, Controllers
+
+Then, if the config data is needed within views, models, or controllers, we should set the data into the app.
+
+In /index.js
+
+Add this code 
+
+    server.configure(function(rendrExpressApp) {
+        ...
+        // Set the config into the app
+        rendrExpressApp.use(function(req, res, next) {
+            var app = req.rendrApp;
+            app.set('config', config);
+            next();
+        });
+        ...
+    }
+
+Then in your views, models, and controllers you can acces the config as
+
+Eg, some views/employees/index.js
+    var config = this.app.get('config');
+    var pusherAppKey = config.pusher.app_key;
+
 # Writing Middleware
 
 # Cookies
