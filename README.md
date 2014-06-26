@@ -432,7 +432,7 @@ From the command-line of your application, type:
 
 These are current coding tips.  Because Rendr is in flux, I'm going to datestamp these to try to prevent errors as it changes.
 
-## Retrieving Data Dynamically (2014-06-16)
+## Retrieving Data Dynamically (2014-06-16) (data pulled from API)
 
     fetchEmployees: function(callback) {
         var sessionData = this.app.get('session');
@@ -510,8 +510,6 @@ These are current coding tips.  Because Rendr is in flux, I'm going to datestamp
     }
 
 
-
-
 ## Adding Views Dynamically (data exists)
 
 This is an example of adding an employee view to an employee list view.
@@ -541,35 +539,6 @@ This code would be located in **views/employees/list.js**
         // Add the view to the list.
         this.$('div.media-list').append(view.render().el);
     
-
-## Adding Views Dynamically (data needs to be pulled from API)
-
-I've implemented a way to do this, but had to modify Rendr's core code to make it work.  Therefore, I'm not documenting this yet, until I do a proper fork or until I get feedback from their team that they way I'm doing it is an appropriate approach.
-
-Note to self:
-
-If the Backbone events don't fire when using this method, we probably didn't specify the tagName or don't have the template being rendered in the tag we want.  Inspect the elements to make sure the template was rendered under the element we thought it was.
-
-The method that I am using with the attach has duplicate views being created because of a bug in Rendr.
-
-There's a comment here from Spike Brehm
-
-> I'm pretty sure it's because there's a view created by the {{view}} helper, then another one created by attach -- definitely we need to fix, and I'll address after the entryPath, RequireJS, and Browserify PRs.
-
-https://github.com/rendrjs/rendr/issues/75
-
-Second, because Rendr is not supposed to but currently requires a model.id, if we don't specify the model from the API, this method breaks.
-
-Basically, in the Rendr code
-/shared/base/view.js
-
-There is this code under parseOptions which needs an id.
-
-    parseOptions: function(options) {
-        ...
-        options.model_name = options.model_name || this.app.modelUtils.modelName(options.model.constructor);
-        options.model_id = options.model.id; // This needs an id in the model
-
 
 ## Adding a Model to a Collection Dynamically and then re-rendering the List view. (2014-06-04)
 
@@ -666,6 +635,14 @@ To find the config setting on the command line:
 To set the env config setting on the Mac from the command line:
 
     export NODE_ENV=production
+
+To check the env config setting on the Mac from the command line:
+
+    env
+
+or if you have a ton of enviroment variables and want to filter:
+
+    env | grep NODE
 
 The config then can be access through dot notation, but is only apparently available in the express portion of the app.  The typical use case would be to access the config in /index.js.
 
