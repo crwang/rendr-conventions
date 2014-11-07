@@ -619,6 +619,16 @@ This code could be located in **views/employees/item.js**
         return null;
     },
 
+
+### Using Templates inside Views/Controllers
+
+    var template = this.app.templateAdapter.getTemplate('users/show'),
+        html = template(data);
+
+
+### Sending events to the app
+
+
 # Config
 
 ## Introduction
@@ -766,5 +776,18 @@ Eg, some views/employees/index.js
 
 # Session Data
 
+# Testing
+
+To run the tests, make sure to first install the karma command-line client:
+
+    npm install -g karma-cli
+
+or 
+
+    sudo npm install -g karma-cli
+
+Then, you can run the tests:
+
+    npm test
 
 
