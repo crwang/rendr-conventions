@@ -428,6 +428,43 @@ From the command-line of your application, type:
     grunt server
 
 
+# Routes
+
+## Overview
+
+Routes are defined in the /app/routes
+
+An example is below:
+
+    match('account/login','account#login');
+
+The first argument matches the url.  The second parameter is the [controller]#[action].  So `account/login` would route to account_controller's login method.
+
+As of late 2014, no helpers exist to help with abstracting out the routes as exists in Rails.  Therefore, in our links, we are hard-coding the path
+
+## Query parameters
+
+Reference: https://github.com/rendrjs/rendr/issues/89
+
+Also, if we need to ignore query parameters, then we can add the query portion to the route to enable it to be ignored and to be handled correctly on the client/server side.
+
+    match('categories',           'home#index');
+    match('categories?*qs',       'home#index');
+
+
+## Leading slash for link urls
+
+eg.
+
+    <a href="/account/login">Login</a>
+
+Please note that the / is necessary currently for the client-side routing to work correctly.
+
+Bad (no leading / )
+
+    <a href="account/login">Login</a>
+
+
 # Coding Tips
 
 These are current coding tips.  Because Rendr is in flux, I'm going to datestamp these to try to prevent errors as it changes.
@@ -628,6 +665,9 @@ This code could be located in **views/employees/item.js**
 
 ### Sending events to the app
 
+## Nested JSON Data
+
+[Converting Nested Data to Models or Collections](https://github.com/crwang/rendr-conventions/wiki/Converting-nested-JSON-data-into-models-or-collections)
 
 # Config
 
@@ -776,6 +816,25 @@ Eg, some views/employees/index.js
 
 # Session Data
 
+# Request flow
+
+## Client
+
+syncer (client-side) --> Backbone.sync --> (HTTP) --> apiProxy --> dataAdapter --> (HTTP) --> backend
+
+The syncer calls the client Sync which makes the rest call, proxied through the api proxy and the data adapter.  The response returns in the syncer's clientSync call and returned through Backbone.sync.
+
+## Server
+syncer --> dataAdapter --> (HTTP) --> backend
+
+The syncer (rendr/shared/syncer) calls the data adapter to make the request.
+
+Then when the request returns, the syncer abstracts the success and passes through the data.
+
+*From the Rendr code documentation:*
+
+The syncer is a collection of instance methods that are mixed into the prototypes of `BaseModel` and `BaseCollection`. The purpose is to encapsulate shared logic for fetching data from the API.
+
 # Testing
 
 To run the tests, make sure to first install the karma command-line client:
@@ -791,3 +850,29 @@ Then, you can run the tests:
     npm test
 
 
+# Notes from Rendr Docs, but with some additions
+
+## Rendr Options
+
+### Server Config
+
+#### Example
+
+    var config = {
+      dataAdapterConfig: {
+        'default': {
+          host: 'api.github.com',
+          protocol: 'https'
+        }
+      },
+      apiPath: '/api',
+      appData: { myAttr: 'value'},
+      dataAdapter: myDataAdapterInstance,
+      apiProxy: myApiProxy,
+      defaultEngine: 'js',
+      entryPath: process.cwd() + '/myapp'
+      errorHandler: function (err, req, res, next){},
+      notFoundHandler: function (req, res, next){},
+      viewsPath: "/app/views",
+    };
+    rendr.createServer(config);
