@@ -669,6 +669,10 @@ This code could be located in **views/employees/item.js**
 
 [Converting Nested Data to Models or Collections](https://github.com/crwang/rendr-conventions/wiki/Converting-nested-JSON-data-into-models-or-collections)
 
+## Passing Vales through Templates
+
+[Example of how to pass values through templates](https://github.com/crwang/rendr-conventions/wiki/Passing-values-into-views-through-a-template)
+
 # Config
 
 ## Introduction
