@@ -1,6 +1,8 @@
 rendr-conventions
 =================
 
+[![Join the chat at https://gitter.im/crwang/rendr-conventions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crwang/rendr-conventions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Conventions we are using for working with apps developed on the Rendr Framework
 
 # Introduction
