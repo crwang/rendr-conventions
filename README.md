@@ -268,7 +268,7 @@ Non-Controller based templates are meant for partials.
 
 *A note about Controller-based vs Non-Controller-based templates and views:*
 
-Rendr does not make a distinction in the templates and views, but I have found that the distinction between a controller-based view and a re-usable partial view is strong enough to warrant a separation.  Templates especially will be different if they are to represent a list of a resource or a the main page of a resource.  Things like headers and other auxilliary information may be found on a page that are not found in a partial.
+Rendr does not make a distinction in the templates and views, but I have found that the distinction between a controller-based view and a re-usable partial view is strong enough to warrant a separation.  Templates especially will be different if they are to represent a list of a resource or a the main page of a resource.  Things like headers and other auxiliary information may be found on a page that are not found in a partial.
 
 
 ##### Example - app/templates/companies/index.hbs
@@ -377,7 +377,7 @@ Non-Controller based views are meant for partials.
 
 *A note about Controller-based vs Non-Controller-based templates and views:*
 
-Rendr does not make a distinction in the templates and views, but I have found that the distinction between a controller-based view and a re-usable partial view is strong enough to warrant a separation.  Views especially will be different if they are to represent a list of a resource or a the main page of a resource.  Things like headers and other auxilliary information may be found on a page that are not found in a partial.  Additionally, page-based views (controller views) are more likely to have other partial views included, where as partial views (non-controller) are more likely to thin. 
+Rendr does not make a distinction in the templates and views, but I have found that the distinction between a controller-based view and a re-usable partial view is strong enough to warrant a separation.  Views especially will be different if they are to represent a list of a resource or a the main page of a resource.  Things like headers and other auxiliary information may be found on a page that are not found in a partial.  Additionally, page-based views (controller views) are more likely to have other partial views included, where as partial views (non-controller) are more likely to thin. 
 
 ##### Example - app/views/employees/index.js
 
